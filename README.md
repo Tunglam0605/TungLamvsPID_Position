@@ -22,18 +22,32 @@ MotorPID_Position motor1(ENCA1, ENCB1, PWM1A, PWM1B, Kp1, Ki1, Kd1, pulses_per_r
 ```cpp
 #include <MotorPID_Position.h>
 
-MotorPID_Position motor1(2, 3, 4, 5, 15, 0.1, 0.5, 900);
-MotorPID_Position motor2(18, 19, 20, 21, 14, 0.13, 0.6, 900);
+#define PULSE_PER_REV 900
+
+MotorPID_Position motor1(2, 3, 4, 5, 15, 0.1, 0.5, PULSE_PER_REV);
+MotorPID_Position motor2(18, 19, 20, 21, 14, 0.13, 0.6, PULSE_PER_REV);
 
 void setup() {
-  Serial.begin(115200);
-  motor1.Init(); motor2.Init();
-  motor1.Home(); motor2.Home(); 
+    Serial.begin(115200);
+    motor1.Init();  motor2.Init();
+    motor1.Home();  motor2.Home(); 
 }
 void loop() {
-  motor1.Position(180);
-  motor2.Position(90);
+    motor1.Position(180.0);
+    motor2.Position(90.0);
+
+    static unsigned long tPrint = 0;
+    if (millis() - tPrint > 500) {
+        Serial.print("M1: "); Serial.print(motor1.getCurrentAngle());
+        Serial.print(" | Xung: "); Serial.print(motor1.getCurrentPulse());
+
+        Serial.print(" | M2: "); Serial.print(motor2.getCurrentAngle());
+        Serial.print(" | Xung: "); Serial.print(motor2.getCurrentPulse());
+
+        tPrint = millis();
+    }
 }
+
 
 ## Hướng dẫn dò thông số PID (Kp, Ki, Kd) cho động cơ
 Cách làm thực tế, đơn giản dễ áp dụng cho mọi loại động cơ:
