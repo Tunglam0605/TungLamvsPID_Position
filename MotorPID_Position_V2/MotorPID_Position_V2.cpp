@@ -2,7 +2,6 @@
  * MotorPID_Position_V2.cpp - Multi-motor PID Position Library
  * Tác giả: Nguyễn Khắc Tùng Lâm
  * Facebook: Lâm Tùng | TikTok: @Tunglam0605 | SĐT: 0325270213
- * Đóng gói bởi ChatGPT OpenAI - 2025
  *
  * Điều khiển vị trí động cơ DC dùng encoder + PID, đa động cơ (tối đa MAX_PID_MOTORS).
  * Chỉ target_angle đổi khi có lệnh mới, angle/pulse chỉ đổi khi motor quay thật.
