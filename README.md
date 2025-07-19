@@ -51,14 +51,12 @@ void setup() {
 }
 3. Điều khiển vị trí/Quay n vòng trong loop()
 cpp
-
-// Giữ vị trí hiện tại:
-motor1.Position(motor1.getCurrentAngle());
-
-// Quay n vòng thực tế, có/không bù xung:
+motor1.Position(motor1.getCurrentAngle());// Giữ vị trí hiện tại
+  // Quay n vòng thực tế, có/không bù xung:
 motor1.moveNRound(2, true);    // Quay +2 vòng, auto bù xung
 motor1.moveNRound(-1, false);  // Quay -1 vòng, không bù xung
-🛠️ BẢNG HÀM API CHÍNH
+
+## 🛠️ BẢNG HÀM API CHÍNH
 Hàm / Method	Chức năng chính
 Position(angle)	Giữ vị trí góc (độ)
 moveNRound(n, autoCorrection)	Quay n vòng, bù xung nếu muốn
@@ -72,7 +70,7 @@ setISat(val)	Đổi giới hạn tích phân
 getCurrentAngle()	Đọc góc hiện tại (độ)
 getCurrentPulse()	Đọc số xung encoder hiện tại
 
-💡 MẸO NÂNG CAO – BÙ XUNG SAI SỐ
+## 💡 MẸO NÂNG CAO – BÙ XUNG SAI SỐ
 Bật bù xung (autoCorrection = true):
 Khuyên dùng cho project thực tế!
 Sau mỗi vòng, thư viện tự “soi” lại vị trí, nếu encoder bị lệch do mất xung/trượt, sẽ tự động sửa lại posi.
@@ -81,9 +79,8 @@ Sau mỗi vòng, thư viện tự “soi” lại vị trí, nếu encoder bị 
 Tắt bù xung (autoCorrection = false):
 Target chỉ tăng lý thuyết, không kiểm tra thực tế. Sai số tích luỹ dần theo thời gian/chạy lâu.
 
-🚩 VÍ DỤ ĐẦY ĐỦ – ĐIỀU KHIỂN 2 ĐỘNG CƠ
+## 🚩 VÍ DỤ ĐẦY ĐỦ – ĐIỀU KHIỂN 2 ĐỘNG CƠ
 cpp
-
 #include <MotorPID_Position.h>
 #define PPR 900
 
@@ -121,7 +118,7 @@ void loop() {
         tPrint = millis();
     }
 }
-🧑‍🔬 HƯỚNG DẪN DÒ PID – AUTO TỐI ƯU HIỆU QUẢ
+## 🧑‍🔬 HƯỚNG DẪN DÒ PID – AUTO TỐI ƯU HIỆU QUẢ
 Tăng dần kp đến khi motor giữ vị trí không bị lệch nhiều, bắt đầu hơi rung nhẹ (nếu quá lớn sẽ dao động mạnh).
 
 Tăng kd để giảm rung, động cơ về đích “êm”, không lắc mạnh khi dừng.
@@ -132,7 +129,7 @@ Thử quay nhiều vòng với cả bù xung (true) và không bù xung (false) 
 
 Lưu ý: Nếu dùng nhiều loại motor/encoder, thử scale offset nhanh setFastPIDOffset(kp_off, kd_off) để tăng lực khi chạy xa, giữ vị trí tốt khi về đích.
 
-📱 HỖ TRỢ – GÓP Ý – NÂNG CẤP
+## 📱 HỖ TRỢ – GÓP Ý – NÂNG CẤP
 Tác giả: Nguyễn Khắc Tùng Lâm
 Facebook: Lâm Tùng
 TikTok: @Tunglam0605
@@ -140,4 +137,4 @@ SDT: 0325270213
 
 Có ý tưởng nâng cấp, thắc mắc, feedback? Cứ inbox, mình support tới bến!
 
-🚀 Làm chủ mọi động cơ với MotorPID_Position – Best choice cho dân kỹ thuật điều khiển Gen Z!
+## 🚀 Làm chủ mọi động cơ với MotorPID_Position – Best choice cho dân kỹ thuật điều khiển Gen Z!
