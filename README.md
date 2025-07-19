@@ -53,24 +53,25 @@ void setup() {
 ```
 ### 3. **Điều khiển vị trí/Quay n vòng trong loop()**
 ```cpp
-motor1.Position(motor1.getCurrentAngle());// Giữ vị trí hiện tại
-  // Quay n vòng thực tế, có/không bù xung:
+// Giữ vị trí hiện tại:
+motor1.Position(motor1.getCurrentAngle());
+// Quay n vòng thực tế, có/không bù xung:
 motor1.moveNRound(2, true);    // Quay +2 vòng, auto bù xung
 motor1.moveNRound(-1, false);  // Quay -1 vòng, không bù xung
 ```
 ## 🛠️ BẢNG HÀM API CHÍNH
-Hàm / Method	Chức năng chính
-Position(angle)	Giữ vị trí góc (độ)
-moveNRound(n, autoCorrection)	Quay n vòng, bù xung nếu muốn
-setEnable(bool)	Tắt/bật PID (motor tự do/giữ vị trí mới)
-Home()	Reset encoder về 0, dừng motor
-Stop()	Ngắt motor ngay (PWM=0)
-setPID(kp,ki,kd)	Đổi hệ số PID chính
-setFastPIDOffset(kp_off, kd_off)	Offset hệ số PID khi sai số lớn (auto scale)
-setPulsePerRev(ppr)	Đổi số xung/vòng
-setISat(val)	Đổi giới hạn tích phân
-getCurrentAngle()	Đọc góc hiện tại (độ)
-getCurrentPulse()	Đọc số xung encoder hiện tại
+Hàm / Method	--------------------- Chức năng chính
+Position(angle)--------------------	Giữ vị trí góc (độ)
+moveNRound(n, autoCorrection)------	Quay n vòng, bù xung nếu muốn
+setEnable(bool)--------------------	Tắt/bật PID (motor tự do/giữ vị trí mới)
+Home()	--------------------------- Reset encoder về 0, dừng motor
+Stop()	--------------------------- Ngắt motor ngay (PWM=0)
+setPID(kp,ki,kd) ------------------	Đổi hệ số PID chính
+setFastPIDOffset(kp_off, kd_off) -- Offset hệ số PID khi sai số lớn (auto scale)
+setPulsePerRev(ppr)	--------------- Đổi số xung/vòng
+setISat(val)	--------------------- Đổi giới hạn tích phân
+getCurrentAngle()	----------------- Đọc góc hiện tại (độ)
+getCurrentPulse()	----------------- Đọc số xung encoder hiện tại
 
 ## 💡 MẸO NÂNG CAO – BÙ XUNG SAI SỐ
 Bật bù xung (autoCorrection = true):
