@@ -40,8 +40,9 @@ Thư viện điều khiển vị trí động cơ DC sử dụng encoder và PID
 
 MotorPID_Position motor1(2, 3, 4, 5, 15, 0.1, 0.5, PPR);
 MotorPID_Position motor2(18, 19, 6, 7, 18, 0.12, 0.6, PPR); // Thêm động cơ tuỳ thích
-2. Khởi tạo trong setup()
-cpp
+```
+### 2. **Khởi tạo trong setup()**
+```cpp
 void setup() {
     Serial.begin(115200);
     motor1.Init();
@@ -49,13 +50,14 @@ void setup() {
     motor1.Home();
     motor2.Home();
 }
-3. Điều khiển vị trí/Quay n vòng trong loop()
-cpp
+```
+### 3. **Điều khiển vị trí/Quay n vòng trong loop()**
+```cpp
 motor1.Position(motor1.getCurrentAngle());// Giữ vị trí hiện tại
   // Quay n vòng thực tế, có/không bù xung:
 motor1.moveNRound(2, true);    // Quay +2 vòng, auto bù xung
 motor1.moveNRound(-1, false);  // Quay -1 vòng, không bù xung
-
+```
 ## 🛠️ BẢNG HÀM API CHÍNH
 Hàm / Method	Chức năng chính
 Position(angle)	Giữ vị trí góc (độ)
@@ -80,7 +82,7 @@ Tắt bù xung (autoCorrection = false):
 Target chỉ tăng lý thuyết, không kiểm tra thực tế. Sai số tích luỹ dần theo thời gian/chạy lâu.
 
 ## 🚩 VÍ DỤ ĐẦY ĐỦ – ĐIỀU KHIỂN 2 ĐỘNG CƠ
-cpp
+```cpp
 #include <MotorPID_Position.h>
 #define PPR 900
 
@@ -118,6 +120,7 @@ void loop() {
         tPrint = millis();
     }
 }
+```
 ## 🧑‍🔬 HƯỚNG DẪN DÒ PID – AUTO TỐI ƯU HIỆU QUẢ
 Tăng dần kp đến khi motor giữ vị trí không bị lệch nhiều, bắt đầu hơi rung nhẹ (nếu quá lớn sẽ dao động mạnh).
 
