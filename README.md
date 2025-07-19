@@ -60,6 +60,7 @@ motor1.moveNRound(2, true);    // Quay +2 vòng, auto bù xung
 motor1.moveNRound(-1, false);  // Quay -1 vòng, không bù xung
 ```
 ## 🛠️ BẢNG HÀM API CHÍNH
+```
 Hàm / Method	--------------------- Chức năng chính
 Position(angle)--------------------	Giữ vị trí góc (độ)
 moveNRound(n, autoCorrection)------	Quay n vòng, bù xung nếu muốn
@@ -72,7 +73,7 @@ setPulsePerRev(ppr)	--------------- Đổi số xung/vòng
 setISat(val)	--------------------- Đổi giới hạn tích phân
 getCurrentAngle()	----------------- Đọc góc hiện tại (độ)
 getCurrentPulse()	----------------- Đọc số xung encoder hiện tại
-
+```
 ## 💡 MẸO NÂNG CAO – BÙ XUNG SAI SỐ
 Bật bù xung (autoCorrection = true):
 Khuyên dùng cho project thực tế!
