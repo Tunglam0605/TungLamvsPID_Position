@@ -56,14 +56,14 @@ void setup() {
 // Giữ vị trí hiện tại:
 motor1.Position(motor1.getCurrentAngle());
 // Quay n vòng thực tế, có/không bù xung:
-motor1.moveNRound(2, true);    // Quay +2 vòng, auto bù xung
-motor1.moveNRound(-1, false);  // Quay -1 vòng, không bù xung
+motor1.moveNRound(2);    // Quay +2 vòng
+motor1.moveNRound(-1);  // Quay -1 vòng
 ```
 ## 🛠️ BẢNG HÀM API CHÍNH
 ```
 Hàm / Method	--------------------- Chức năng chính
 Position(angle)--------------------	Giữ vị trí góc (độ)
-moveNRound(n, autoCorrection)------	Quay n vòng, bù xung nếu muốn
+moveNRound(n)----------------------	Quay n vòng
 setEnable(bool)--------------------	Tắt/bật PID (motor tự do/giữ vị trí mới)
 Home()	--------------------------- Reset encoder về 0, dừng motor
 Stop()	--------------------------- Ngắt motor ngay (PWM=0)
@@ -74,51 +74,130 @@ setISat(val)	--------------------- Đổi giới hạn tích phân
 getCurrentAngle()	----------------- Đọc góc hiện tại (độ)
 getCurrentPulse()	----------------- Đọc số xung encoder hiện tại
 ```
-## 💡 MẸO NÂNG CAO – BÙ XUNG SAI SỐ
-Bật bù xung (autoCorrection = true):
-Khuyên dùng cho project thực tế!
-Sau mỗi vòng, thư viện tự “soi” lại vị trí, nếu encoder bị lệch do mất xung/trượt, sẽ tự động sửa lại posi.
-→ Không bị cộng dồn sai số dù chạy nhiều vòng liên tục!
-
-Tắt bù xung (autoCorrection = false):
-Target chỉ tăng lý thuyết, không kiểm tra thực tế. Sai số tích luỹ dần theo thời gian/chạy lâu.
-
 ## 🚩 VÍ DỤ ĐẦY ĐỦ – ĐIỀU KHIỂN 2 ĐỘNG CƠ
 ```cpp
-#include <MotorPID_Position.h>
-#define PPR 900
+#include "MotorPID_Position_V2.h"
+#define PPR 3600  // Số xung trên 1 vòng encoder, chỉnh theo động cơ của bạn
 
-MotorPID_Position motor1(2, 3, 4, 5, 15, 0.1, 0.5, PPR);
-MotorPID_Position motor2(18, 19, 6, 7, 18, 0.12, 0.6, PPR);
+// Khai báo 2 động cơ, tuỳ chân ENCA/ENCB/PWM thuận/nghịch & hệ số PID thực tế
+MotorPID_Position motor1(37, 36, 2, 3, 5.65, 0.065, 0.1, PPR);
+MotorPID_Position motor2(35, 34, 4, 5, 5.65, 0.065, 0.1, PPR);
 
 void setup() {
     Serial.begin(115200);
     motor1.Init();
     motor2.Init();
+    motor1.setEnable(false);
+    motor2.setEnable(false);
     motor1.Home();
     motor2.Home();
+    Serial.println(F("Gửi: ROUND 2 | ROUND2 -1 | HOME1 | HOME2 | OFF1 | ON1 | SET1 180 | SET2 -90"));
 }
-
 void loop() {
-    // Gửi qua Serial: "ROUND 2" hoặc "ROUND2 3" hoặc "OFF1", "ON1", "HOME1"
     if (Serial.available()) {
         String cmd = Serial.readStringUntil('\n');
-        int n;
-        if (sscanf(cmd.c_str(), "ROUND %d", &n) == 1)   motor1.moveNRound(n, true);
-        if (sscanf(cmd.c_str(), "ROUND2 %d", &n) == 1)  motor2.moveNRound(n, true);
-        if (cmd == "OFF1") motor1.setEnable(false);
-        if (cmd == "ON1") motor1.setEnable(true);
-        if (cmd == "HOME1") motor1.Home();
-    }
-    motor1.Position(motor1.getCurrentAngle());
-    motor2.Position(motor2.getCurrentAngle());
+        cmd.trim(); // Bỏ ký tự trắng đầu/cuối
+        Serial.print("Chuỗi nhận được: |"); Serial.print(cmd); Serial.println("|"); // Debug!
 
+        // ROUND2 n
+        if (cmd.startsWith("ROUND2")) {
+            int idx = cmd.indexOf(' ');
+            if (idx > 0) {
+                String numStr = cmd.substring(idx + 1); numStr.trim();
+                int n = numStr.toFloat();
+                Serial.print("Motor2 quay "); Serial.print(n); Serial.println(" vòng.");
+                motor2.moveNRound(n);
+            }
+        }
+        // ROUND n
+        else if (cmd.startsWith("ROUND")) {
+            int idx = cmd.indexOf(' ');
+            if (idx > 0) {
+                String numStr = cmd.substring(idx + 1); numStr.trim();
+                int n = numStr.toFloat();
+                Serial.print("Motor1 quay "); Serial.print(n); Serial.println(" vòng.");
+                motor1.moveNRound(n);
+            }
+        }
+        // SET2 góc
+        else if (cmd.startsWith("SET2")) {
+            int idx = cmd.indexOf(' ');
+            if (idx > 0) {
+                String numStr = cmd.substring(idx + 1); numStr.trim();
+                float goc = numStr.toFloat();
+                Serial.print("Motor2 giữ góc: "); Serial.println(goc);
+                motor2.Position(goc);
+            }
+        }
+        // SET1 góc
+        else if (cmd.startsWith("SET1")) {
+            int idx = cmd.indexOf(' ');
+            if (idx > 0) {
+                String numStr = cmd.substring(idx + 1); numStr.trim();
+                float goc = numStr.toFloat();
+                Serial.print("Motor1 giữ góc: "); Serial.println(goc);
+                motor1.Position(goc);
+            }
+        }
+        // HOME1
+        else if (cmd == "HOME1") {
+            Serial.println("Motor1 về home!");
+            motor1.Home();
+        }
+        // HOME2
+        else if (cmd == "HOME2") {
+            Serial.println("Motor2 về home!");
+            motor2.Home();
+        }
+        // OFF1
+        else if (cmd == "OFF1") {
+            Serial.println("Motor1: PID OFF!");
+            motor1.setEnable(false);
+        }
+        // ON1
+        else if (cmd == "ON1") {
+            Serial.println("Motor1: PID ON!");
+            motor1.setEnable(true);
+        }
+        // OFF2
+        else if (cmd == "OFF2") {
+            Serial.println("Motor2: PID OFF!");
+            motor2.setEnable(false);
+        }
+        // ON2
+        else if (cmd == "ON2") {
+            Serial.println("Motor2: PID ON!");
+            motor2.setEnable(true);
+        }
+        // STOP1
+        else if (cmd == "STOP1") {
+            Serial.println("Motor1 stop!");
+            motor1.Stop();
+        }
+        // STOP2
+        else if (cmd == "STOP2") {
+            Serial.println("Motor2 stop!");
+            motor2.Stop();
+        }
+        // Unknown command
+        else {
+            Serial.println("Lệnh không hợp lệ hoặc sai cú pháp!");
+        }
+    }
+
+    // Gọi PID cho từng motor (KHÔNG truyền tham số)
+    motor1.Position();
+    motor2.Position();
+
+    // In trạng thái động cơ mỗi 300ms
     static unsigned long tPrint = 0;
     if (millis() - tPrint > 300) {
         Serial.print("[M1] Angle: "); Serial.print(motor1.getCurrentAngle(), 1);
         Serial.print(" | Pulse: "); Serial.print(motor1.getCurrentPulse());
+        Serial.print(" | Target: "); Serial.print(motor1.getTargetAngle(), 1);
         Serial.print(" || [M2] Angle: "); Serial.print(motor2.getCurrentAngle(), 1);
-        Serial.print(" | Pulse: "); Serial.println(motor2.getCurrentPulse());
+        Serial.print(" | Pulse: "); Serial.print(motor2.getCurrentPulse());
+        Serial.print(" | Target: "); Serial.println(motor2.getTargetAngle(), 1);
         tPrint = millis();
     }
 }
